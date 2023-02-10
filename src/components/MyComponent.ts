@@ -12,6 +12,5 @@ export class MyComponent extends Component {
 
   updateState() {
     this.state.text = this.state.text === "Owl" ? "World" : "Owl";
-    this.env.router.navigate("/about");
   }
 }

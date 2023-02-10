@@ -11,9 +11,9 @@ const ROOT_TEMPLATE = xml/*xml*/ `
         <div class="w-full flex items-center justify-between">
             <a class="flex items-center text-reddish-brown no-underline hover:no-underline font-bold text-2xl lg:text-4xl" href="#">
                 <img class="h-8 mx-auto lg:mr-0" src="owl.svg"/>
-                OWL Tailwind App Starter Project
+                OWL TypeScript, Vite, Tailwind Starter Project
             </a>
-            <div class="flex w-1/2 justify-end content-center">
+            <div class="flex w-1/3 justify-end content-center">
                 <a class="inline-block text-center h-10 p-2 md:h-auto md:p-4" href="https://github.com/Coding-Dodo/OWL-JavaScript-Tailwind-Project-Starter">
                     <img class="w-2/6 mx-auto lg:mr-0" src="github-logo.svg"/>
                 </a>
@@ -31,7 +31,13 @@ const ROOT_TEMPLATE = xml/*xml*/ `
                 <h2 class="mb-4 text-base text-gray-700 font-bold leading-tight text-center md:text-left slide-in-bottom-h1">
                     Dropdown Component
                 </h2>
-                <DropDown buttonText="'OWL Dropdown'" menuItems="state.menuItems" dropdownLeft="true" selectedMenu="state.selectedMenu">
+                <DropDown 
+                  buttonText="'OWL Dropdown'" 
+                  menuItems="state.menuItems" 
+                  dropdownLeft="true" 
+                  value="state.selectedMenu"
+                  onSelectMenuItem.bind="selectMenuItem"
+                >
                 </DropDown>
             </div>
             <div class="block py-6 fit-content">
@@ -41,7 +47,7 @@ const ROOT_TEMPLATE = xml/*xml*/ `
                 <AutoCompleteInput 
                     data="state.searchData" 
                     value="state.selectedTechnology"
-                    t-on-chosen="onOptionChosen"
+                    onOptionChosen.bind="onOptionChosen"
                     inputClass="'border border-gray-300 py-2 px-3 rounded-md focus:outline-none focus:shadow-outline w-full'"
                     placeHolder="'Type something...'"
                 />
@@ -70,7 +76,6 @@ state.selectedTechnology: <t t-esc="toJsonString(state.selectedTechnology)"/>
 export type MenuItem = {
   id: string;
   name: string;
-  callBack?: (menuItem: MenuItem) => void;
 };
 
 export type RootState = {
@@ -87,17 +92,14 @@ export class Root extends Component {
       {
         id: "item-1",
         name: "OWL",
-        callBack: (menuItem: MenuItem) => this.clickMenu(menuItem),
       },
       {
         id: "item-2",
         name: "Rollup.js",
-        callBack: (menuItem: MenuItem) => this.clickMenu(menuItem),
       },
       {
         id: "item-3",
         name: "TailwindCSS",
-        callBack: (menuItem: MenuItem) => this.clickMenu(menuItem),
       },
     ],
     selectedMenu: undefined,
@@ -115,7 +117,7 @@ export class Root extends Component {
     selectedTechnology: undefined,
   });
 
-  clickMenu(menuItem: MenuItem) {
+  selectMenuItem(menuItem: MenuItem) {
     this.state.selectedMenu = menuItem;
   }
 

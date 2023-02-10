@@ -1,4 +1,10 @@
-import { Component, useState, xml, useExternalListener, useRef } from "@odoo/owl";
+import {
+  Component,
+  useState,
+  xml,
+  useExternalListener,
+  useRef,
+} from "@odoo/owl";
 
 const AUTO_COMPLETE_INPUT_TEMPLATE = xml/*xml*/ `
 <div class="relative" v-click-outside="clickedOutside">
@@ -15,7 +21,7 @@ const AUTO_COMPLETE_INPUT_TEMPLATE = xml/*xml*/ `
     />
     <span
       t-if="props.value"
-      t-on-click.prevent="reset()"
+      t-on-click.prevent="reset"
       class="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
     >
       x
@@ -51,10 +57,10 @@ export class AutoCompleteInput extends Component {
       type: Array,
     },
     value: { name: "", optional: true },
+    onOptionChosen: { type: Function, optional: true },
   };
   state = useState({
     showOptions: false,
-    chosenOption: "",
     searchTerm: "",
   });
   autoCompleteInputRef = useRef("autoCompleteInputRef");
@@ -64,18 +70,15 @@ export class AutoCompleteInput extends Component {
   }
 
   hideOptions(event: Event) {
-    console.log("hide Options", this.autoCompleteInputRef.el);
     if (!this.autoCompleteInputRef.el?.contains(event.target as Node)) {
-      Object.assign(this.state, { showOptions: false });
+      this.state.showOptions = false;
     }
   }
 
   reset() {
-    // this.trigger("input", "");
-    // this.trigger("chosen", { selectedTechnology: null });
-    this.state.chosenOption = "";
     this.state.searchTerm = "";
     this.state.showOptions = false;
+    this.props.onOptionChosen(null);
   }
 
   handleShowOptions(evt: Event) {
@@ -90,18 +93,16 @@ export class AutoCompleteInput extends Component {
     if (!this.state.searchTerm) {
       return this.props.data;
     }
-    return this.props.data.filter((item: { name: string; optional: boolean }) => {
-      return item.name.toLowerCase().includes(this.state.searchTerm.toLowerCase());
-    });
+    return this.props.data.filter(
+      (item: { name: string; optional: boolean }) => {
+        return item.name
+          .toLowerCase()
+          .includes(this.state.searchTerm.toLowerCase());
+      }
+    );
   }
 
   handleClick(item: { name: string; optional: boolean }) {
-    // this.trigger("input", item.name);
-    // this.trigger("chosen", { selectedTechnology: item });
-    Object.assign(this.state, {
-      chosenOption: item.name,
-      showOptions: false,
-      searchTerm: item.name,
-    });
+    this.props.onOptionChosen(item);
   }
 }

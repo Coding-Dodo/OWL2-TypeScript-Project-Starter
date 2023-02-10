@@ -10,7 +10,12 @@ const DROPDOWN_TEMPLATE = xml/*xml*/ `
 <div t-ref="DropDown" class="relative inline-block text-left">
   <div>
     <button type="button" class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500" id="menu-button" aria-expanded="true" aria-haspopup="true" t-on-click.prevent="toggleDropDown">
-      <t t-esc="props.buttonText"/>
+      <t t-if="props.value">
+        <t t-esc="props.value.name"/>
+      </t>
+      <t t-else="">
+        <t t-esc="props.buttonText"/>
+      </t>
       <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
         <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
       </svg>
@@ -21,9 +26,9 @@ const DROPDOWN_TEMPLATE = xml/*xml*/ `
       <t t-foreach="props.menuItems" t-as="menuItem" t-key="menuItem.id">
         <t t-slot="menu-item">
           <a 
-            t-on-click="() => onClickMenuItem.bind(this)(menuItem)" 
+            t-on-click="() => this.onClickMenuItem(menuItem)" 
             t-attf-href="{{menuItem.target ? menuItem.target : '#'}}" 
-            t-attf-class="hover:bg-gray-100 hover:text-gray-900 text-gray-700 block px-4 py-2 text-sm {{ props.selectedMenu and props.selectedMenu.id == menuItem.id ? 'bg-gray-100 text-gray-900': ''}}" 
+            t-attf-class="hover:bg-gray-100 hover:text-gray-900 text-gray-700 block px-4 py-2 text-sm {{ props.value and props.value.id == menuItem.id ? 'bg-gray-100 text-gray-900': ''}}" 
             role="menuitem" 
             tabindex="-1" 
             t-att-id="menuItem.id"
@@ -40,7 +45,6 @@ const DROPDOWN_TEMPLATE = xml/*xml*/ `
 export type MenuItem = {
   id: string;
   name: string;
-  callBack: (menuItem: MenuItem) => void;
 };
 
 export class DropDown extends Component {
@@ -54,10 +58,10 @@ export class DropDown extends Component {
         id: String,
         target: { type: String, optional: true },
         name: String,
-        callBack: { type: Function, optional: true },
       },
     },
-    selectedMenu: {
+    onSelectMenuItem: { type: Function, optional: true },
+    value: {
       type: Object,
       optional: true,
     },
@@ -73,16 +77,16 @@ export class DropDown extends Component {
 
   closeDropDown(event: Event) {
     if (!this.dropdownContainerRef.el?.contains(event.target as Node)) {
-      Object.assign(this.state, { open: false });
+      this.state.open = false;
     }
   }
 
   toggleDropDown() {
-    Object.assign(this.state, { open: !this.state.open });
+    this.state.open = !this.state.open;
   }
 
   onClickMenuItem(menuItem: MenuItem) {
-    menuItem.callBack(menuItem);
+    this.props.onSelectMenuItem(menuItem);
     this.state.open = false;
   }
 }
