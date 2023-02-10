@@ -73,11 +73,9 @@ export class AutoCompleteInput extends Component {
   reset() {
     // this.trigger("input", "");
     // this.trigger("chosen", { selectedTechnology: null });
-    Object.assign(this.state, {
-      chosenOption: "",
-      searchTerm: "",
-      showOptions: false,
-    });
+    this.state.chosenOption = "";
+    this.state.searchTerm = "";
+    this.state.showOptions = false;
   }
 
   handleShowOptions(evt: Event) {

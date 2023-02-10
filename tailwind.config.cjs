@@ -3,7 +3,7 @@ module.exports = {
   content: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx,xml}"],
   theme: {
     extend: {
-      backgroundImage: (theme) => ({
+      backgroundImage: () => ({
         "storefront-colour": "url('/storefront-colour.svg')",
       }),
       colors: {

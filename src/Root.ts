@@ -70,11 +70,19 @@ state.selectedTechnology: <t t-esc="toJsonString(state.selectedTechnology)"/>
 export type MenuItem = {
   id: string;
   name: string;
+  callBack?: (menuItem: MenuItem) => void;
+};
+
+export type RootState = {
+  menuItems: MenuItem[];
+  selectedMenu?: MenuItem;
+  searchData: { id: number; name: string }[];
+  selectedTechnology?: { id?: number; name: string };
 };
 export class Root extends Component {
   static template = ROOT_TEMPLATE;
   static components = { MyComponent, DropDown, AutoCompleteInput };
-  state = useState({
+  state = useState<RootState>({
     menuItems: [
       {
         id: "item-1",
@@ -92,7 +100,7 @@ export class Root extends Component {
         callBack: (menuItem: MenuItem) => this.clickMenu(menuItem),
       },
     ],
-    selectedMenu: {},
+    selectedMenu: undefined,
     searchData: [
       { id: 1, name: "Rollup.js" },
       { id: 2, name: "Webpack" },
@@ -104,20 +112,15 @@ export class Root extends Component {
       { id: 8, name: "Vue" },
       { id: 9, name: "React" },
     ],
-    selectedTechnology: null,
+    selectedTechnology: undefined,
   });
 
   clickMenu(menuItem: MenuItem) {
-    console.log(menuItem);
-    // Object.assign(this.state, { selectedMenu: menuItem });
     this.state.selectedMenu = menuItem;
-    console.log("this.state.selectedMenu", this.state.selectedMenu);
   }
 
   onOptionChosen(selectedTechnology: { name: string; optional: boolean }) {
-    Object.assign(this.state, {
-      selectedTechnology,
-    });
+    this.state.selectedTechnology = selectedTechnology;
   }
 
   toJsonString(obj: object) {

@@ -1,4 +1,10 @@
-import { Component, useState, xml, useExternalListener, useRef } from "@odoo/owl";
+import {
+  Component,
+  useState,
+  xml,
+  useExternalListener,
+  useRef,
+} from "@odoo/owl";
 
 const DROPDOWN_TEMPLATE = xml/*xml*/ `
 <div t-ref="DropDown" class="relative inline-block text-left">
@@ -56,6 +62,7 @@ export class DropDown extends Component {
       optional: true,
     },
     dropdownLeft: { type: Boolean, optional: true },
+    slots: {},
   };
   state = useState({ open: false });
   dropdownContainerRef = useRef("DropDown");
